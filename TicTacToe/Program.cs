@@ -4,42 +4,59 @@ using System.Threading;
 
 namespace ConsoleApplication1
 {
-	public class Globals
+	public class Global
 	{
 		public static int X = 0;
 		public static int Y = 0;
+		public static char OX;
 	}
 	public class Player
 	{
-		private static char OX;
-		private static int decision = 0;
-		public static void First()
+		private static void PlayerDecisionCycle()
 		{
-			Console.BackgroundColor = ConsoleColor.Blue;
-			Console.ForegroundColor = ConsoleColor.Yellow;
-			OX = 'X';
-			while (decision == 1)
+			while (true)
 			{
 				switch (Console.ReadKey().Key)
 				{
 					case ConsoleKey.W:
-						Console.SetCursorPosition(X,Y); 
+						Global.Y++;
+						Console.SetCursorPosition(Global.X,Global.Y); 
+						break;
+					case ConsoleKey.A:
+						Global.X--;
+						Console.SetCursorPosition(Global.X,Global.Y);
+						break;
+					case ConsoleKey.S:
+						Global.Y--;
+						Console.SetCursorPosition(Global.X, Global.Y);
+						break;
+					case ConsoleKey.D: 
+						Global.X++; 
+						Console.SetCursorPosition(Global.X, Global.Y); 
+						break;
+					case ConsoleKey.Enter:
+						Console.Write(Global.OX);
+						Global.X = 0;
+						Global.Y = 0;
 						break;
 				}
 			}
 		}
-
+		public static void First()
+		{
+			Console.BackgroundColor = ConsoleColor.Blue;
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Global.OX = 'X';
+			PlayerDecisionCycle();
+		}
 		public static void Second()
 		{
 			Console.BackgroundColor = ConsoleColor.Yellow;
 			Console.ForegroundColor = ConsoleColor.Blue;
-			OX = 'O';
-			while (decision == 2)
-			{
-				
-			}
+			Global.OX = 'O';
+			PlayerDecisionCycle();
 		}
-	}
+	}	
 	internal class Program
 	{
 		public static void buildCon(char[] cell)
@@ -50,9 +67,9 @@ namespace ConsoleApplication1
 				Console.Write("|");
 				for (int i2 = 0; i2 < 3; i2++)
 				{
-					Console.WriteLine(" " + cell[i2]);
+					Console.WriteLine(" " + cell[i2] + " ");
 				}
-				Console.Write(" |\n");
+				Console.Write("|\n");
 			}
 			Console.WriteLine("-------");
 		}
@@ -69,16 +86,15 @@ namespace ConsoleApplication1
 		}
 		public static void Main(string[] args)
 		{
-			// DO ONCE: 
+			// DO ONCE:	
 			char[] cellsChar = new char[8];
 			for (int counter = 0; counter < 8; counter++)
 			{
 				cellsChar[counter] = '-';
 			}
 			
-			
 			int keyPressedCounter = 0;
-			while (!KeyPressed)						//TODO: fix function keyPressed
+			while (Console.ReadKey().Key == null)						//TODO: fix function KeyPressed
 			{
 				buildCon(cellsChar);				//TODO: select character depending on player type
 				Thread.Sleep(250);
