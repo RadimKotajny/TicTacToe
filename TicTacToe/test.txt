@@ -2,3 +2,11 @@
 3 4 5
 6 7 8
 
+UP => -3
+DOWN => +3
+LEFT => -1
+RIGHT => +1
+
+1. while(!keyPressed) = vykreslí obrázek, kde místo XO bude '-'
+2. Pokud keyPressed = W || A || S || D || Enter
+3. 

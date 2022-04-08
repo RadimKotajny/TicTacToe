@@ -1,188 +1,166 @@
 ﻿using System;
 using System.Media;
+using System.Reflection.Emit;
 using System.Threading;
 
 namespace ConsoleApplication1
 {
 	public class Global
 	{
-		public static int X = 0;
-		public static int Y = 0;
+		public static int X = 5;
+		public static int Y = 2;
 		public static char OX;
+		public static char[] CellsChar = new char[9];
 	}
 	public class Player
 	{
-		private static void PlayerDecisionCycle()
+		private static void PlayerDecision()	//TODO: fix statements
 		{
-			while (true)
+			bool cycleContinue = false;
+			while(cycleContinue == false)
 			{
-				switch (Console.ReadKey().Key)
+				switch (Console.ReadKey().Key)												
 				{
-					case ConsoleKey.W:
-						Global.Y++;
+					case ConsoleKey.UpArrow:
+						Global.Y = Global.Y - 1;
 						Console.SetCursorPosition(Global.X,Global.Y); 
 						break;
-					case ConsoleKey.A:
-						Global.X--;
-						Console.SetCursorPosition(Global.X,Global.Y);
+					case ConsoleKey.LeftArrow:
+						//if (Global.X > 1)
+						//{
+						Global.X = Global.X - 3;
+						Console.SetCursorPosition(Global.X,Global.Y);	
+						//}
 						break;
-					case ConsoleKey.S:
-						Global.Y--;
+					case ConsoleKey.DownArrow:
+						Global.Y = Global.Y + 1;
 						Console.SetCursorPosition(Global.X, Global.Y);
 						break;
-					case ConsoleKey.D: 
+					case ConsoleKey.RightArrow:
+						//if(Global.X < )
+						Global.X = Global.X + 2;
 						Global.X++; 
 						Console.SetCursorPosition(Global.X, Global.Y); 
 						break;
 					case ConsoleKey.Enter:
 						Console.Write(Global.OX);
-						Global.X = 0;
-						Global.Y = 0;
+						Global.X = 5;
+						Global.Y = 2;
+						cycleContinue = true;
 						break;
 				}
 			}
 		}
 		public static void First()
 		{
-			Console.BackgroundColor = ConsoleColor.Blue;
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			Global.OX = 'X';
-			PlayerDecisionCycle();
+			PlayerDecision();
 		}
 		public static void Second()
 		{
-			Console.BackgroundColor = ConsoleColor.Yellow;
-			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.ForegroundColor = ConsoleColor.Cyan;
 			Global.OX = 'O';
-			PlayerDecisionCycle();
+			PlayerDecision();
 		}
-	}	
+	}
 	internal class Program
 	{
-		public static void buildCon(char[] cell)
+		public static void BuildCon(char[] cell)
 		{
-			Console.WriteLine("-------");
+			int lastNum = 0;
+			int i2;
+			Console.WriteLine("-----------");
 			for (int i = 0; i < 3; i++)
 			{
 				Console.Write("|");
-				for (int i2 = 0; i2 < 3; i2++)
+				for (i2 = lastNum; i2 < lastNum + 3; i2++)
 				{
-					Console.WriteLine(" " + cell[i2] + " ");
+					Console.Write(" " + cell[i2] + " ");
 				}
+				lastNum = i2;
 				Console.Write("|\n");
 			}
-			Console.WriteLine("-------");
+			Console.WriteLine("-----------");
 		}
-		public static void checkCharacter(char var1)
+		public static void CheckCharacter(char var1)
 		{
 			if (var1 == 'X')
 			{
+				Console.Clear();
 				Console.WriteLine("X has won!");
 			}
-			else
+			else if (var1 == 'O')
 			{
+				Console.Clear();
 				Console.WriteLine("O has won!");
 			}
 		}
 		public static void Main(string[] args)
 		{
-			// DO ONCE:	
-			char[] cellsChar = new char[8];
-			for (int counter = 0; counter < 8; counter++)
+			Console.SetWindowSize(50, 10);
+			Console.Title = "OX Game | made by Radim Kotajny";
+			void Reset()
 			{
-				cellsChar[counter] = '-';
+				Console.SetCursorPosition(5, 2);
+				Console.Clear();
+			}
+			// DO ONCE:	
+			//char[] cellsChar = new char[8];								//is global variable
+			for (int counter = 0; counter < 9; counter++)					//initialize '-' to arrays
+			{
+				Global.CellsChar[counter] = '-';
 			}
 			
 			int keyPressedCounter = 0;
-			while (Console.ReadKey().Key == null)						//TODO: fix function KeyPressed
+			while (true)
 			{
-				buildCon(cellsChar);				//TODO: select character depending on player type
-				Thread.Sleep(250);
+				BuildCon(Global.CellsChar);
+				Console.SetCursorPosition(Global.X, Global.Y);
 				if (keyPressedCounter % 2 == 0)
 				{
 					Player.First();
+					Reset();
 				}
 				else
 				{
 					Player.Second();
+					Reset();
 				}
 				keyPressedCounter++;
-			}
-
-
-			/*
-			const int maxLength = 9;
-			Console.WriteLine("Enter cells: ");
-			string cells = Console.ReadLine();
-			if (cells.Length > maxLength)
-			{
-				cells = cells.Substring(0, maxLength);
-			}
-			char[] cellsChar = new char[8];
-			cellsChar = cells.ToCharArray();
-			Console.Clear();
-			Console.WriteLine("-----------");
-			
-			int lastNum = 0;
-			int cycle;
-			for (int i2 = 0; i2 < 3; i2++)
-			{
-				Console.Write("|");
-				for (cycle = lastNum; cycle < lastNum + 3; cycle++)
+				if (Global.CellsChar[0] == Global.CellsChar[1] && Global.CellsChar[1] == Global.CellsChar[2])
 				{
-					Console.Write(" " + cellsChar[cycle] + " ");
+					CheckCharacter(Global.CellsChar[0]);
 				}
-				lastNum = cycle;
-				Console.Write("|\n");
+				else if (Global.CellsChar[3] == Global.CellsChar[4] && Global.CellsChar[4] == Global.CellsChar[5])
+				{
+					CheckCharacter(Global.CellsChar[3]);
+				}
+				else if (Global.CellsChar[6] == Global.CellsChar[7] && Global.CellsChar[7] == Global.CellsChar[8])
+				{
+					CheckCharacter(Global.CellsChar[6]);
+				}
+				else if (Global.CellsChar[0] == Global.CellsChar[4] && Global.CellsChar[4] == Global.CellsChar[8])
+				{
+					CheckCharacter(Global.CellsChar[0]);
+				}
+				else if (Global.CellsChar[1] == Global.CellsChar[4] && Global.CellsChar[4] == Global.CellsChar[7])
+				{
+					CheckCharacter(Global.CellsChar[1]);
+				}
+				else if (Global.CellsChar[2] == Global.CellsChar[5] && Global.CellsChar[5] == Global.CellsChar[8])
+				{
+					CheckCharacter(Global.CellsChar[2]);
+				}
+				else if (Global.CellsChar[0] == Global.CellsChar[4] && Global.CellsChar[4] == Global.CellsChar[8])
+				{
+					CheckCharacter(Global.CellsChar[0]);
+				}
+				else if (Global.CellsChar[2] == Global.CellsChar[4] && Global.CellsChar[4] == Global.CellsChar[6])
+				{
+					CheckCharacter(Global.CellsChar[2]);
+				}
 			}
-			Console.WriteLine("-----------");
-			
-			*/
-			
-			if (cellsChar[0] == cellsChar[1] && cellsChar[1] == cellsChar[2])
-			{
-				checkCharacter(cellsChar[0]);
-			}
-			else if (cellsChar[3] == cellsChar[4] && cellsChar[4] == cellsChar[5])
-			{
-				checkCharacter(cellsChar[3]);
-			}
-			else if (cellsChar[6] == cellsChar[7] && cellsChar[7] == cellsChar[8])
-			{
-				checkCharacter(cellsChar[6]);
-			}
-			else if (cellsChar[0] == cellsChar[4] && cellsChar[4] == cellsChar[8])
-			{
-				checkCharacter(cellsChar[0]);
-			}
-			else if (cellsChar[1] == cellsChar[4] && cellsChar[4] == cellsChar[7])
-			{
-				checkCharacter(cellsChar[1]);
-			}
-			else if (cellsChar[2] == cellsChar[5] && cellsChar[5] == cellsChar[8])
-			{
-				checkCharacter(cellsChar[2]);
-			}
-			else if (cellsChar[0] == cellsChar[4] && cellsChar[4] == cellsChar[8])
-			{
-				checkCharacter(cellsChar[0]);
-			}
-			else if (cellsChar[2] == cellsChar[4] && cellsChar[4] == cellsChar[6])
-			{
-				checkCharacter(cellsChar[2]);
-			}
-			/*else if (cellsChar[1] != '1' && cellsChar[2] != '2' && 
-					cellsChar[3] != '3' && cellsChar[4] != '4' && cellsChar[5] != '5' && cellsChar[6]
-					!= '6' && cellsChar[7] != '7' && cellsChar[8] != '8' && cellsChar[9] != '9')
-			{
-				Console.WriteLine("\nERROR");
-			}*/
-			else
-			{
-				Console.Write("\nRemiza.\nNikdo nevyhral :/");
-			}
-			
-			Console.ReadLine(); 
 		}
 	}
 }
