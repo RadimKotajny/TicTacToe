@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Media;
 using System.Reflection.Emit;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+
+//TODO: fix color changing
+//TODO: fix replacing other player
 
 namespace ConsoleApplication1
 {
@@ -13,7 +17,6 @@ namespace ConsoleApplication1
 		public static char[] CellsChar = new char[9];
 		public static int SelectedCell = 4;
 		public static bool GameOver = false;
-		
 		public static void BuildCon(char[] cell)
 		{
 			Console.Clear();
@@ -126,17 +129,12 @@ namespace ConsoleApplication1
 	{
 		public static void CheckCharacter(char var1)
 		{
-			if (var1 == 'X')
+			if (var1 == 'X' || var1 == 'O')
 			{
 				Console.Clear();
-				Console.WriteLine("X has won!");
+				Console.WriteLine($"{var1} has won!");
 				Global.GameOver = true;
-			}
-			else if (var1 == 'O')
-			{
-				Console.Clear();
-				Console.WriteLine("O has won!");
-				Global.GameOver = true;
+				System.Environment.Exit(0);
 			}
 		}
 		public static void Main(string[] args)
@@ -170,6 +168,7 @@ namespace ConsoleApplication1
 					Reset();
 				}
 				keyPressedCounter++;
+				//TODO: rethink a better solution than this maybe?
 				if (Global.CellsChar[0] == Global.CellsChar[1] && Global.CellsChar[1] == Global.CellsChar[2])
 				{
 					CheckCharacter(Global.CellsChar[0]);
@@ -218,6 +217,7 @@ namespace ConsoleApplication1
 						Console.ForegroundColor = ConsoleColor.Magenta;
 						Console.WriteLine("It's a draw!");
 						Console.ReadKey();
+						System.Environment.Exit(0);
 					}
 				}
 			}
